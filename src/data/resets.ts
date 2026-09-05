@@ -1,0 +1,81 @@
+import type { SystemReset } from "./types";
+
+const s = (id: string, name: string, ata: string, kind: SystemReset["kind"], when: string, wait: string, after: string, steps: string[], extra: Partial<SystemReset> = {}): SystemReset => ({
+  id, name, ata, kind, when, wait, after,
+  steps: steps.map((text, i) => ({ n: i + 1, text })),
+  ...extra,
+});
+
+export const RESETS: SystemReset[] = [
+  s("elac", "ELAC 1/2 Reset", "27", "switch", "ELAC FAULT, pitch/roll law degradation", "OFF 10 s, dann ON", "ELAC FAULT weg, Normal Law wenn Hyd ok",
+    ["TSM/ECAM bestätigen. GND, Hyd verfügbar.", "Overhead ELAC 1 (bzw. 2) OFF.", "10 s warten.", "ELAC ON. Status prüfen."],
+    { ecam: "ELAC 1(2) FAULT", amm: "TSM 27", hot: true, aliases: ["elac1", "elac2"], relatedCbs: ["elac1", "elac2"] }),
+  s("sec", "SEC 1/2/3 Reset", "27", "switch", "SEC FAULT, spoiler/elev standby", "OFF 10 s", "SEC FAULT weg",
+    ["TSM. Overhead SEC pb OFF 10 s ON.", "Spoiler/speedbrake Status."],
+    { ecam: "SEC FAULT", hot: true }),
+  s("fac", "FAC 1/2 Reset", "22", "switch", "FAC FAULT, yaw damper / rudder trim / RTLU", "OFF 10 s", "FAC FAULT weg, Yaw ok",
+    ["GND. FAC pb Overhead OFF 10 s ON.", "Rudder trim zero, yaw damper check."],
+    { ecam: "FAC FAULT", aliases: ["fac1"] }),
+  s("fmgc", "FMGC / MCDU Reset", "22", "computer", "FMGC fail, MCDU blank, opposite range/mode", "30–60 s", "MCDU A/C STATUS, FMGC aligned",
+    ["MCDU MENU → MCDU RESET wenn angeboten.", "Sonst CB FMGC 1/2 pull 1 min, push.", "FMS position / IRS check."],
+    { ecam: "FMGC FAULT", relatedCbs: ["fmgc1", "fmgc2"] }),
+  s("adiru", "ADIRU Align / Reset", "34", "switch", "ADIRU FAULT, ATT/HDG flag, ALIGN", "Full align 3–10 min", "ALIGN weg, IRS NAV",
+    ["GND, Aircraft still. ADIRS rotary NAV.", "Nicht bewegen. Fast Align nur nach TSM.", "ADR/IR pb nur nach TSM OFF/ON."],
+    { ecam: "ADIRU FAULT", hot: true, aliases: ["adirs", "irs"] }),
+  s("cids", "CIDS Reset", "23", "switch", "Cabin lights/PSU/PA fail, CIDS FAULT", "3–10 s + boot", "Cabin normal, FAP ok",
+    ["FAP: CIDS RESET 3 s (je AMM).", "Oder CB CIDS 1/2 pull 10 s.", "Cabin kurz dunkel = normal."],
+    { ecam: "CIDS FAULT", hot: true, relatedCbs: ["cids1"] }),
+  s("bscu", "BSCU Reset", "32", "switch", "BRAKES, NWS, A/SKID FAULT", "OFF 10 s", "A/SKID normal, NWS ok",
+    ["GND, chock, Park Brake je TSM.", "A/SKID & N/W STRG OFF 10 s ON.", "Pedal/NWS check ohne bewegen wenn verboten."],
+    { ecam: "ANTI SKID / NWS", hot: true, relatedCbs: ["bscu"] }),
+  s("aevc", "AEVC / Avionics Vent", "21", "computer", "VENT, BLOWER/EXTRACT FAULT, AVNCS SYS", "CB 1 min", "VENT normal, no smoke config stuck",
+    ["Konfig GND/FLT prüfen.", "AEVC CB pull 60 s, push.", "Blower/Extract laufen hören."],
+    { ecam: "VENT / AVNCS SYS", aliases: ["ventavncssys", "vent"], relatedCbs: ["aevc"] }),
+  s("acsc", "ACSC / Pack Reset", "21", "switch", "PACK FAULT, ZONE, TRIM AIR", "OFF 30 s", "PACK FLOW, Zone temp ok",
+    ["Pack pb OFF. 30 s. ON.", "ACSC CB nur TSM.", "Hot air / trim prüfen."],
+    { ecam: "PACK FAULT", relatedCbs: ["acsc1"] }),
+  s("gcu", "GCU / GEN Reset", "24", "procedure", "GEN FAULT, IDG, GEN 1(2)", "je TSM", "GEN online, no FAULT",
+    ["IDG disconnect nicht als Reset missbrauchen (one shot).", "GCU CB nach TSM.", "EXT/APU vor IDG-Versuchen."],
+    { ecam: "GEN FAULT", aliases: ["idg"], relatedCbs: ["gcu1"] }),
+  s("bmc", "BMC / Bleed Reset", "36", "computer", "AIR ENG 1(2) BLEED, BMC", "CB 10 s", "Bleed pressure normal",
+    ["Bleed pb OFF. Cool down.", "BMC CB pull/push nach TSM.", "Leak/OHEAT nicht totresetten."],
+    { ecam: "AIR BLEED", relatedCbs: ["bmc1"] }),
+  s("fwc", "FWC / SDAC", "31", "cb", "E/WD locked, FWC FAULT, SDAC", "1 min", "E/WD refresh, warnings ok",
+    ["Nur TSM. FWC/SDAC CB.", "PFR nachher ziehen."],
+    { ecam: "FWC FAULT", relatedCbs: ["fwc1"] }),
+  s("cvr", "CVR", "31", "cb", "CVR FAULT", "10 s", "CVR gong / test",
+    ["CVR CB. Test am panel.", "CVR erase nur authorized."],
+    { relatedCbs: ["cvr"] }),
+  s("lgciu", "LGCIU", "32", "cb", "L/G, DOOR, LGCIU FAULT", "10 s", "Gear indications ok",
+    ["GND. LGCIU CB nach TSM.", "Proximity/rigging oft Ursache, kein Reset."]),
+  s("apu", "APU ECB", "49", "switch", "APU FAULT, AUTO SHUTDOWN", "Cool down + master",
+    "APU AVAIL",
+    ["MASTER OFF, cool (typ. 2 min nach TSM).", "Nicht gegen Fire-Loop resetten.", "ECB CB nur TSM."],
+    { ecam: "APU FAULT", relatedCbs: ["apu"] }),
+  s("fadec", "FADEC / ECU", "70", "cb", "ENG FADEC FAULT, EIU", "MASTER OFF + TSM", "Channel in control",
+    ["ENG MASTER OFF.", "EIU/FADEC CB nach TSM, nicht im FLT improvisieren."],
+    { relatedCbs: ["fadec1"] }),
+  s("atsu", "ATSU", "46", "cb", "ATSU FAULT, no AOC", "1 min", "ATSU INIT ok",
+    ["ATSU CB pull 60 s.", "INIT/DATALINK check."],
+    { relatedCbs: ["atsu"] }),
+  s("phc", "Probe Heat", "30", "cb", "PITOT/AOA/TAT HEAT", "10 s", "Heat am GND/FLT je logic",
+    ["PHC CB nach TSM.", "GND heat logic beachten."]),
+  s("whc", "Window Heat", "30", "cb", "WINDOW HEAT FAULT", "10 s", "Window heat on",
+    ["WHC CB. Window clear."]),
+  s("fire-test", "FIRE TEST", "26", "procedure", "Test vor Flight / nach Arbeit", "Test cycle", "CRC + lights, agent not discharged",
+    ["Overhead FIRE TEST.", "Agent squib nicht triggern.", "Loop fail → TSM nicht Test-Spam."]),
+  s("isis", "ISIS", "34", "cb", "ISIS FAULT (Enhanced)", "Align", "ISIS flags clear",
+    ["ISIS CB / brightness.", "Att/alt flags nach TSM."]),
+  s("wxr", "WXR", "34", "switch", "WXR FAULT, ND image", "OFF/ON", "WXR image",
+    ["WXR SYS OFF, 10 s, ON.", "Radome/waveguide nicht als Reset."]),
+  s("fqi", "FQIS", "28", "cb", "FUEL QTY, FQI", "1 min", "Quantity indicated",
+    ["FQI CB. BITE über CFDS."]),
+];
+
+export function getReset(id: string) {
+  const t = id.toLowerCase();
+  return RESETS.find((r) => r.id === t || r.aliases?.includes(t));
+}
+export function resetsForAta(ata: string) {
+  return RESETS.filter((r) => r.ata === ata);
+}

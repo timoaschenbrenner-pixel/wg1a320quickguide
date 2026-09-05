@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime-Cltr0gcK.js";import{i as t}from"./index-zD3-6JfO.js";var n=e();function r({compact:e}){return(0,n.jsx)(`p`,{className:t(`rounded-md border border-caution/30 bg-caution/8 text-caution`,e?`px-3 py-2 text-xs`:`px-4 py-3 text-sm`),children:`Training only. AMM / TSM / CBL des MSN führen — dieser Guide ersetzt sie nicht.`})}export{r as t};

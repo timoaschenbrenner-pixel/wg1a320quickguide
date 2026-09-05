@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "MUC WG1 A320FAM QUICK GUIDE",
+      "hasCanvas": false,
+      "bodyTextLen": 902,
+      "bodyTextHash": "b91beab0dbbcad91aaa5e2065883bcd8bd3dcbcf195944754fc5a6d87be2dc85",
+      "bodyTextPrefix": "MUC WG1 A320FAM QUICK GUIDE Suche ATA, Panel, CB… / Home Systeme",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "MUC WG1 A320FAM QUICK GUIDE",
+      "hasCanvas": false,
+      "bodyTextLen": 878,
+      "bodyTextHash": "fdaea60f2d53b27896e236ca41469b39162a5d6ea4a489e7f3d2e96e563c3986",
+      "bodyTextPrefix": "MUC WG1 A320FAM QUICK GUIDE Home Systeme Struktur Antennen CBs R",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}

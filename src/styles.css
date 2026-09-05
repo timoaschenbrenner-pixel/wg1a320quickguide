@@ -1,0 +1,87 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --color-bg: #090c10;
+  --color-surface: #12171e;
+  --color-elevated: #1a222c;
+  --color-fg: #e6e8eb;
+  --color-muted: #8b95a1;
+  --color-subtle: #5c6672;
+  --color-border: #2a323c;
+  --color-border-strong: #3a4450;
+  --color-accent: #5ec8d8;
+  --color-accent-fg: #061014;
+  --color-caution: #c9a227;
+  --color-caution-fg: #1a1504;
+  --color-warn: #d4564e;
+  --color-warn-fg: #1a0807;
+  --color-ok: #4caf7a;
+  --color-ok-fg: #06140c;
+
+  --color-background: var(--color-bg);
+  --color-foreground: var(--color-fg);
+  --color-card: var(--color-surface);
+  --color-card-foreground: var(--color-fg);
+  --color-primary: var(--color-accent);
+  --color-primary-foreground: var(--color-accent-fg);
+  --color-muted-foreground: var(--color-muted);
+  --color-ring: var(--color-accent);
+  --color-destructive: var(--color-warn);
+  --color-secondary: var(--color-elevated);
+  --color-secondary-foreground: var(--color-fg);
+
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius: 12px;
+
+  --text-2xs: 0.6875rem;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html,
+  body,
+  #root {
+    background: var(--color-bg);
+    color: var(--color-fg);
+    min-height: 100%;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    line-height: 1.5;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+.hangar-grid {
+  background-image:
+    linear-gradient(to right, rgb(94 200 216 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(94 200 216 / 0.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
